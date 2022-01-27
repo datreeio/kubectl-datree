@@ -37,7 +37,7 @@ This command will fetch all resources within the namespace "exmpl", and execute 
 kubectl datree audit -s "1.22.0" -- --namespace exmpl
 ```
 
-This command will fetch the resource of kind "Service" named "myAwesomeService", and execute a policy check it:
+This command will fetch the resource of kind "Service" named "myAwesomeService", and execute a policy check against it:
 ```
 kubectl datree audit -- service myAwesomeService
 ```
