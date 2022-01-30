@@ -1,0 +1,109 @@
+#!/bin/bash
+
+show_help(){
+    printf "Datree's kubectl plugin extends the tool's capabilities to allow scanning k8s yaml files within the cluster for misconfigurations.\n"
+    printf "For more information and examples, see the official documentation: https://hub.datree.io\n"
+    printf "\nUsage:\n"
+    printf "  kubectl datree audit [datree CLI args] -- [options]\n"
+    printf "\nDatree CLI args:\n"
+    printf "  This plugin supports all of the Datree CLI arguments: https://hub.datree.io/cli-arguments\n"
+    printf "\nOptions:\n"
+    printf "  [--namespace <namespace>] Test all resources in the cluster belonging to the specified namespace\n"
+    printf "  [<resource type> <resource name>] Test a single given resource in the cluster\n"
+    printf "\nRunning 'kubectl datree audit' with no arguments is equivalent to 'kubectl datree audit -- -n default'\n"
+}
+
+# Validate argument
+if [ "$1" != "audit" ]
+then
+    show_help
+    exit 0
+fi
+
+DATREE_OPTIONS=()
+EOO=0
+TEST_BY_NAMESPACE=1
+NAMESPACE="default"
+RESOURCE_KIND=""
+RESOURCE_NAME=""
+
+# Parse command line
+while [[ $2 ]]; do
+    if ! ((EOO)); then
+        if [[ $2 == "--" ]]; then
+            EOO=1
+        else
+            DATREE_OPTIONS+=("$2")
+        fi
+
+        shift
+    else
+        if [[ $2 == "-n" ]] || [[ $2 == "--namespace" ]]; then
+            if [ ! -z "$3" ]; then
+                NAMESPACE="$3"
+            else
+                echo "No namespace provided, using 'default' namespace"
+            fi
+        elif [ ! -z "$2" ]; then
+            if [ ! -z "$3" ]; then
+                TEST_BY_NAMESPACE=0
+                RESOURCE_KIND="$2"
+                RESOURCE_NAME="$3"
+            else
+                echo "No resource name provided, exiting..."
+            fi
+        else
+            echo "No namespace or resource name provided, exiting..."
+        fi
+        
+        break
+    fi
+done
+
+INDEX=0
+DST_DIR=""$HOME"/.datree/tmp"
+mkdir -p $DST_DIR
+
+get_yamls(){
+    INDEX=0
+    while read line
+        do
+            kubectl get $line -n $NAMESPACE -o yaml > $DST_DIR/"${line%%/*}-${INDEX}".yaml
+            let "INDEX+=1"
+    done
+}
+
+get_resources(){
+    while read line
+        do
+            get_yamls < <(kubectl get $line -n $NAMESPACE --ignore-not-found --no-headers -o name)
+    done
+}
+
+# TODO: add new flag to disable strict kube-conform validation
+DATREE_TEST_COMMAND="datree test --ignore-missing-schemas "${DATREE_OPTIONS[@]}""
+
+# Test file/s
+if ((TEST_BY_NAMESPACE)); then
+    # Test all resources in a given namespace
+    echo "Fetching resources, this may take a few seconds..."
+    
+    get_resources < <(kubectl api-resources --verbs=list --namespaced -o name)
+    
+    if [ "$(ls -A $DST_DIR)" ]; then
+        # TODO: add new flag to disable strict kube-conform validation
+        $DATREE_TEST_COMMAND $DST_DIR/*.yaml
+    else
+        echo "Invalid namespace provided, exiting..."
+    fi
+else
+    # Test a single file of a given resource type
+    kubectl get $RESOURCE_KIND $RESOURCE_NAME -o yaml > $DST_DIR/$RESOURCE_KIND.yaml
+    
+    if [ -s $DST_DIR/"$RESOURCE_KIND".yaml ]; then
+        $DATREE_TEST_COMMAND $DST_DIR/$RESOURCE_KIND.yaml
+    fi
+fi
+
+# Cleanup
+rm -rf $DST_DIR
