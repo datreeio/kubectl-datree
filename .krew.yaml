@@ -3,7 +3,7 @@ kind: Plugin
 metadata:
   name: datree
 spec:
-  version: v0.1.0
+  version: v0.0.1
   homepage: https://github.com/datreeio/kubectl-datree
   shortDescription: Scan your k8s files within the cluster for misconfigurations
   description: |
@@ -19,6 +19,6 @@ spec:
         values:
         - darwin
         - linux
-    uri: https://github.com/datreeio/kubectl-datree/.../v0.9.4.tar.gz
-    sha256: 2125a043ea3f78379a601de82e6a4cb5778f9f988634bf1e02a63566411ac81d
+    uri: https://github.com/datreeio/kubectl-datree/releases/download/v0.0.1/kubectl-datree.zip
+    sha256: 54b24e97c68d199c98b0ddd786f74ba7ae84249be2a4b379cf4394c67d32f0d8
     bin: kubectl-datree
