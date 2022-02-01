@@ -12,6 +12,9 @@ One-line installation can be found here: [Getting started](https://hub.datree.io
 This plugin supports **MacOS** and **Linux**.
 
 ## Installation
+### Manual installation
+1. Download the latest release from this repository.
+2. Unzip, then copy "kubectl-datree" to any directory in your $PATH (for example - /usr/local/bin/).
 ### Via Krew
 1. Install [krew](https://krew.sigs.k8s.io/docs/user-guide/setup/install/)
 2. Install the datree plugin:
