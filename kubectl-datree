@@ -4,7 +4,7 @@ show_help(){
     printf "Datree's kubectl plugin extends the tool's capabilities to allow scanning k8s yaml files within the cluster for misconfigurations.\n"
     printf "For more information and examples, see the official documentation: https://hub.datree.io\n"
     printf "\nUsage:\n"
-    printf "  kubectl datree audit [datree CLI args] -- [options]\n"
+    printf "  kubectl datree test [datree CLI args] -- [options]\n"
     printf "\nDatree CLI args:\n"
     printf "  This plugin supports all of the Datree CLI arguments: https://hub.datree.io/cli-arguments\n"
     printf "\nOptions:\n"
@@ -14,10 +14,16 @@ show_help(){
 }
 
 # Validate argument
-if [ "$1" != "audit" ]
+if [ "$1" != "test" ]
 then
     show_help
-    exit 0
+    exit 1
+fi
+
+# Install datree if it isn't installed
+if ! command -v datree &> /dev/null; then
+    echo "Datree is not installed on your machine, proceeding to install..."
+    curl https://get.datree.io | /bin/bash
 fi
 
 DATREE_OPTIONS=()
@@ -86,7 +92,7 @@ DATREE_TEST_COMMAND="datree test --ignore-missing-schemas "${DATREE_OPTIONS[@]}"
 # Test file/s
 if ((TEST_BY_NAMESPACE)); then
     # Test all resources in a given namespace
-    echo "Fetching resources, this may take a few seconds..."
+    echo "Fetching resources, this may take some time depending on the amount of resources in your cluster..."
     
     get_resources < <(kubectl api-resources --verbs=list --namespaced -o name)
     
