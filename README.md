@@ -2,11 +2,7 @@
 
 ## Overview 
 This plugin extends the Datree CLI's capabilities to allow scanning resources within your cluster for misconfigurations.  
-👉 **Docs:** [https://hub.datree.io/kubectl-plugin](https://hub.datree.io/kubectl-plugin/#utm_source=github&utm_medium=organic_oss)
-
-## Prerequisites
-In order to use this plugin, the Datree CLI needs to be installed.  
-One-line installation can be found here: [Getting started](https://hub.datree.io/)
+<!--👉 **Docs:** [https://hub.datree.io/kubectl-plugin](https://hub.datree.io/kubectl-plugin/#utm_source=github&utm_medium=organic_oss) !-->
 
 ## Supported Platforms
 This plugin supports **MacOS** and **Linux**.
