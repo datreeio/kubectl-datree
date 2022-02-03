@@ -10,7 +10,7 @@ show_help(){
     printf "\nOptions:\n"
     printf "  [--namespace <namespace>] Test all resources in the cluster belonging to the specified namespace\n"
     printf "  [<resource type> <resource name>] Test a single given resource in the cluster\n"
-    printf "\nRunning 'kubectl datree audit' with no arguments is equivalent to 'kubectl datree audit -- -n default'\n"
+    printf "\nRunning 'kubectl datree test' with no arguments is equivalent to 'kubectl datree test -- -n default'\n"
 }
 
 # Validate argument
