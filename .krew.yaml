@@ -19,8 +19,8 @@ spec:
         values:
         - darwin
         - linux
-    uri: https://github.com/datreeio/kubectl-datree/releases/download/v0.0.1/kubectl-datree.zip
-    sha256: "54b24e97c68d199c98b0ddd786f74ba7ae84249be2a4b379cf4394c67d32f0d8"
+    uri: https://github.com/datreeio/kubectl-datree/releases/download/v0.0.2/kubectl-datree.zip
+    sha256: "61843ffb6c2c128ccdeeb0f9291f72834708d500b4656d467a4f1b5ac78612bf"
     files:
     - from: "kubectl-datree"
       to: "."
