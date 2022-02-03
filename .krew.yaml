@@ -3,7 +3,7 @@ kind: Plugin
 metadata:
   name: datree
 spec:
-  version: v0.0.1
+  version: v0.0.2
   homepage: https://github.com/datreeio/kubectl-datree
   shortDescription: Scan the resources within your cluster for misconfigurations
   description: |
@@ -24,7 +24,6 @@ spec:
     files:
     - from: "kubectl-datree"
       to: "."
-    - from: "LICENSE"
     - from: LICENSE
       to: "."
     bin: kubectl-datree
