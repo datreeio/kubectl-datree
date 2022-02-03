@@ -9,8 +9,8 @@ This plugin supports **MacOS** and **Linux**.
 
 ## Installation
 ### Manual installation
-1. Download the latest release from this repository.
-2. Unzip, then copy "kubectl-datree" to any directory in your $PATH (for example - /usr/local/bin/).
+1. [Download the latest release](https://github.com/datreeio/kubectl-datree/releases/download/v0.0.2/kubectl-datree.zip) from this repository.
+2. Unzip the archive, then copy "kubectl-datree" to any directory in the PATH environment variable on your machine (for example - /usr/local/bin/).
 
 ## Usage
 ```
