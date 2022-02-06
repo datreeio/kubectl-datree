@@ -30,13 +30,13 @@ options:
 ```
 
 ## Examples
-This command will fetch all resources within the namespace "exmpl", and execute a policy check against them using k8s schema version 1.22.0:
+This command will fetch all resources within the namespace "exmpl", and execute a policy check against them:
 ```
-kubectl datree test -s "1.22.0" -- --namespace exmpl
+kubectl datree test -- --namespace exmpl
 ```
 
-This command will fetch the resource of kind "Service" named "myAwesomeService", and execute a policy check against it:
+This command will fetch the resource of kind "Service" named "myAwesomeService", and execute a policy check against it using k8s schema version 1.22.0:
 ```
-kubectl datree test -- service myAwesomeService
+kubectl datree test -s "1.22.0" -- service myAwesomeService
 ```
 
