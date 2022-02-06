@@ -39,4 +39,4 @@ This command will fetch the resource of kind "Service" named "myAwesomeService",
 ```
 kubectl datree test -s "1.22.0" -- service myAwesomeService
 ```
-
+![](Resources/test_single_example.gif)
