@@ -1,5 +1,12 @@
 #!/bin/bash
 
+# Check if Datree is installed
+if ! command -v datree &> /dev/null; then
+    printf "Datree is not installed on your machine, please run 'curl https://get.datree.io | /bin/bash' to install\n"
+    printf "For more information, visit https://hub.datree.io/\n"
+    exit 1
+fi
+
 show_help(){
     printf "Datree's kubectl plugin extends the tool's capabilities to allow scanning k8s yaml files within the cluster for misconfigurations.\n"
     printf "For more information and examples, see the official documentation: https://hub.datree.io\n"
@@ -18,12 +25,6 @@ if [ "$1" != "test" ]
 then
     show_help
     exit 1
-fi
-
-# Install datree if it isn't installed
-if ! command -v datree &> /dev/null; then
-    echo "Datree is not installed on your machine, proceeding to install..."
-    curl https://get.datree.io | /bin/bash
 fi
 
 DATREE_OPTIONS=()
