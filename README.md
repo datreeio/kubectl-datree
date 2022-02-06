@@ -10,7 +10,8 @@ This plugin supports **MacOS** and **Linux**.
 ## Installation
 ### Manual installation
 1. [Download the installation script](https://github.com/datreeio/kubectl-datree/releases/latest/download/manual_install.sh) from this repository.
-2. Run the script from a terminal (an administrator password will be required to complete the installation).
+2. Open a terminal at the location of the script. 
+3. Run "/bin/sh manual_install.sh" (an administrator password will be required to complete the installation).
 
 ## Usage
 ```
