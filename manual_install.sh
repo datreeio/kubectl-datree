@@ -9,12 +9,12 @@ curl -L -O https://github.com/datreeio/kubectl-datree/releases/latest/download/k
 PACKAGE_NAME="kubectl-datree.zip"
 PLUGIN_EXEC_NAME="kubectl-datree"
 
-mkdir bin
-unzip $PACKAGE_NAME -d bin > /dev/null
+mkdir tmpDatree
+unzip $PACKAGE_NAME -d tmpDatree > /dev/null
 
-sudo cp bin/$PLUGIN_EXEC_NAME /usr/local/bin/$PLUGIN_EXEC_NAME
+sudo cp tmpDatree/$PLUGIN_EXEC_NAME /usr/local/bin/$PLUGIN_EXEC_NAME
 
-rm -rf bin && rm -rf $PACKAGE_NAME
+rm -rf tmpDatree && rm -rf $PACKAGE_NAME
 
 if [ -f /usr/local/bin/$PLUGIN_EXEC_NAME ]; then
     echo "Plugin installed successfully"
