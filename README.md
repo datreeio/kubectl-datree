@@ -1,7 +1,9 @@
 # kubectl-datree
 
 ## Overview 
+The Datree CLI provides a policy enforcement solution to run automatic checks for rule violations in Kuberenetes configuration files.  
 This plugin extends the Datree CLI's capabilities to allow scanning resources within your cluster for misconfigurations.  
+To learn more about Datree, visit the [datree website](https://www.datree.io/).
 <!--👉 **Docs:** [https://hub.datree.io/kubectl-plugin](https://hub.datree.io/kubectl-plugin/#utm_source=github&utm_medium=organic_oss) !-->
 
 ## Supported Platforms
