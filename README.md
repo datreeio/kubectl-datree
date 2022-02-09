@@ -41,7 +41,8 @@ The plugin supports the following resource types:
 * replicaset
 * statefulset
 * job
-* cronjobs
+* cronjobs  
+
 When running against a given namespace, only resources of these types will be checked.  
 
 ## Examples
