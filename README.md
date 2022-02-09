@@ -26,10 +26,23 @@ datree CLI args:
 
 options:
   [--namespace <namespace>] Test all resources in the cluster belonging to the specified namespace
-  [<resource type> <resource name>] Test a single given resource in the cluster
+  [<resource type> <resource name> <namespace>] Test a single given resource in the cluster
 
   Running 'kubectl datree test' with no arguments is equivalent to 'kubectl datree test -- --namespace default'
 ```
+
+## Specification
+The plugin supports the following resource types:
+* pod
+* service
+* ingress
+* daemonset
+* deployment
+* replicaset
+* statefulset
+* job
+* cronjobs
+When running against a given namespace, only resources of these types will be checked.  
 
 ## Examples
 This command will fetch all resources within the namespace "exmpl", and execute a policy check against them:
@@ -37,8 +50,8 @@ This command will fetch all resources within the namespace "exmpl", and execute 
 kubectl datree test -- --namespace exmpl
 ```
 
-This command will fetch the resource of kind "Service" named "myAwesomeService", and execute a policy check against it using k8s schema version 1.22.0:
+This command will fetch the resource of kind "Service" named "myAwesomeService" in namespace "myCoolNamespace", and execute a policy check against it using k8s schema version 1.22.0:
 ```
-kubectl datree test -s "1.22.0" -- service myAwesomeService
+kubectl datree test -s "1.22.0" -- service myAwesomeService myCoolNamespace
 ```
 ![](Resources/test_single_example.gif)
