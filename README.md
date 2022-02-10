@@ -25,10 +25,10 @@ datree CLI args:
   This plugin supports all of the Datree CLI arguments: https://hub.datree.io/cli-arguments
 
 options:
-  [--namespace <namespace>] Test all resources in the cluster belonging to the specified namespace
+  [-n <namespace>] Test all resources in the cluster belonging to the specified namespace
   [<resource type> <resource name> <namespace>] Test a single given resource in the cluster
 
-  Running 'kubectl datree test' with no arguments is equivalent to 'kubectl datree test -- --namespace default'
+  Running 'kubectl datree test' with no arguments is equivalent to 'kubectl datree test -- -n default'
 ```
 
 ## Specification
@@ -48,7 +48,7 @@ When running against a given namespace, only resources of these types will be ch
 ## Examples
 This command will fetch all resources within the namespace "exmpl", and execute a policy check against them:
 ```
-kubectl datree test -- --namespace exmpl
+kubectl datree test -- -n exmpl
 ```
 
 This command will fetch the resource of kind "Service" named "myAwesomeService" in namespace "myCoolNamespace", and execute a policy check against it using k8s schema version 1.22.0:
