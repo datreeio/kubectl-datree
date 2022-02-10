@@ -20,7 +20,7 @@ spec:
         values:
         - darwin
         - linux
-    {{addURIAndSha "https://github.com/datreeio/kubectl-datree/releases/latest/download/kubectl-datree.zip" .TagName }}
+    {{addURIAndSha "https://github.com/datreeio/kubectl-datree/releases/download/{{ .TagName }}/kubectl-datree.zip" .TagName }}
     files:
     - from: "kubectl-datree"
       to: "."
