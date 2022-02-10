@@ -1,6 +1,5 @@
 name: krew-update
-on:
-  workflow_dispatch
+on: workflow_dispatch
 jobs:
   krew-update:
     runs-on: ubuntu-latest
