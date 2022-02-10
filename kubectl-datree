@@ -27,6 +27,12 @@ then
     exit 1
 fi
 
+# Get server k8s version and set it in env
+SERVER_VERSION=$(kubectl version --short 2>/dev/null | grep "Server Version:")
+SERVER_VERSION=${SERVER_VERSION:17:7}
+SERVER_VERSION=${SERVER_VERSION%%-*}
+DATREE_SCHEMA_VERSION=$SERVER_VERSION
+
 DATREE_OPTIONS=()
 EOO=0
 TEST_BY_NAMESPACE=1
@@ -76,7 +82,7 @@ mkdir -p $DST_DIR
 get_yamls(){
     while read line
         do
-            kubectl get $line -n $NAMESPACE -o yaml > $DST_DIR/"kc-${line%%/*}-${line##*/}".yaml &
+            kubectl get $line -n $NAMESPACE -o yaml > $DST_DIR/"kubectl-${line%%/*}-${line##*/}".yaml &
             scanned_files+=("$line")
     done
 }
@@ -89,7 +95,7 @@ get_common_resources(){
                 continue
             fi
 
-            kubectl get $line -n $NAMESPACE -o yaml > $DST_DIR/"kc-${line%%/*}-${line##*/}".yaml &
+            kubectl get $line -n $NAMESPACE -o yaml > $DST_DIR/"kubectl-${line%%/*}-${line##*/}".yaml &
             scanned_files+=("$line")
     done
 }
@@ -101,7 +107,6 @@ get_additional_resources(){
     done
 }
 
-# TODO: add new flag to disable strict kube-conform validation
 DATREE_TEST_COMMAND="datree test --ignore-missing-schemas "${DATREE_OPTIONS[@]}""
 
 # List all scanned files to display at end of test
@@ -117,18 +122,17 @@ if ((TEST_BY_NAMESPACE)); then
     wait
 
     if [ "$(ls -A $DST_DIR)" ]; then
-        # TODO: add new flag to disable strict kube-conform validation
         $DATREE_TEST_COMMAND $DST_DIR/*.yaml
     else
         echo "Invalid namespace provided, exiting..."
     fi
 else
     # Test a single file of a given resource type
-    kubectl get $RESOURCE_KIND $RESOURCE_NAME -n $NAMESPACE -o yaml > $DST_DIR/"kc-$RESOURCE_KIND-$RESOURCE_NAME".yaml
+    kubectl get $RESOURCE_KIND $RESOURCE_NAME -n $NAMESPACE -o yaml > $DST_DIR/"kubectl-$RESOURCE_KIND-$RESOURCE_NAME".yaml
     scanned_files+=("$(kubectl get $RESOURCE_KIND $RESOURCE_NAME -n $NAMESPACE -o name)")
     
-    if [ -s $DST_DIR/"kc-$RESOURCE_KIND-$RESOURCE_NAME".yaml ]; then
-        $DATREE_TEST_COMMAND $DST_DIR/"kc-$RESOURCE_KIND-$RESOURCE_NAME".yaml
+    if [ -s $DST_DIR/"kubectl-$RESOURCE_KIND-$RESOURCE_NAME".yaml ]; then
+        $DATREE_TEST_COMMAND $DST_DIR/"kubectl-$RESOURCE_KIND-$RESOURCE_NAME".yaml
     fi
 fi
 
