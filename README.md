@@ -1,9 +1,10 @@
 # kubectl-datree
 
 ## Overview 
-The Datree CLI provides a policy enforcement solution to run automatic checks for rule violations in Kuberenetes configuration files.  
+The Datree CLI provides a policy enforcement solution to run automatic checks for rule violations in Kuberenetes configuration files. To learn more about Datree, visit the [Datree website](https://www.datree.io/).
+
 This plugin extends the Datree CLI's capabilities to allow scanning resources within your cluster for misconfigurations.  
-To learn more about Datree, visit the [datree website](https://www.datree.io/).
+
 <!--👉 **Docs:** [https://hub.datree.io/kubectl-plugin](https://hub.datree.io/kubectl-plugin/#utm_source=github&utm_medium=organic_oss) !-->
 
 <br/>
@@ -46,27 +47,27 @@ options:
 
 ## Specification
 The plugin supports the following resource types:
-* pod
-* service
-* ingress
-* daemonset
-* deployment
-* replicaset
-* statefulset
-* job
-* cronjobs  
+* Pod
+* Service
+* Ingress
+* Daemonset
+* Deployment
+* Replicaset
+* Statefulset
+* Job
+* CronJob  
 
-When running against a given namespace, only resources of these types will be checked.  
+:warning: When running against a given namespace, only resources of these types will be checked.  
 
 <br/>
 
 ## Examples
-This command will fetch all resources within the namespace "exmpl", and execute a policy check against them:
+This command will fetch all resources within the namespace `exmpl`, and execute a policy check against them:
 ```
 kubectl datree test -- -n exmpl
 ```
 
-This command will fetch the resource of kind "Service" named "myAwesomeService" in namespace "myCoolNamespace", and execute a policy check against it using k8s schema version 1.22.0:
+This command will fetch the resource of kind `Service` named `myAwesomeService` in namespace `myCoolNamespace`, and execute a policy check against it using k8s schema version 1.22.0:
 ```
 kubectl datree test -s "1.22.0" -- service myAwesomeService myCoolNamespace
 ```
