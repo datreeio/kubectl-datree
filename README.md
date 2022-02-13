@@ -4,10 +4,10 @@
 [Datree](https://www.datree.io/) is a CLI tool that provides a policy enforcement solution to run automatic checks for rule violations in Kuberenetes configuration files.  
 This plugin extends the Datree CLI's capabilities to allow scanning resources within your cluster.  
 
-*Ensure your cluster is free from misconfigurations, and prepare it for the future by testing your resources against any k8s schema version!*
-<br/><br/>
-<!--👉 **Docs:** [https://hub.datree.io/kubectl-plugin](https://hub.datree.io/kubectl-plugin/#utm_source=github&utm_medium=organic_oss) !-->
+*Ensure your cluster is free from misconfigurations, and prepare it for the future by testing your resources against any k8s schema version!*  
 
+👉 **Docs:** [https://hub.datree.io/kubectl-plugin](https://hub.datree.io/kubectl-plugin/#utm_source=github&utm_medium=organic_oss)
+<br/><br/>
 ## Supported Platforms
 This plugin supports **MacOS** and **Linux**.
 <br/><br/>
