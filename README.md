@@ -1,5 +1,7 @@
 # kubectl-datree
+<p align="center">
 <img src="https://img.shields.io/badge/docs-up--to--date-green" target="https://hub.datree.io/kubectl-plugin/#utm_source=github&utm_medium=organic_oss"> <img src="https://img.shields.io/badge/Supported%20OS-Linux%2FMacOS-green" target="_blank"> <img src="https://img.shields.io/github/v/tag/datreeio/kubectl-datree" target="https://github.com/datreeio/kubectl-datree/releases"> <img src="https://img.shields.io/github/issues-raw/datreeio/kubectl-datree" target="https://github.com/datreeio/kubectl-datree/issues">
+</p>
 
 ## Overview 
 
@@ -10,7 +12,6 @@ This **kubectl plugin** extends the [Datree CLI's](https://github.com/datreeio/d
 </p>
 
 
-👉 **Docs:** [https://hub.datree.io/kubectl-plugin](https://hub.datree.io/kubectl-plugin/#utm_source=github&utm_medium=organic_oss)
 <br/>
 
 ## Use cases
