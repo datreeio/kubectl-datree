@@ -1,11 +1,15 @@
 # kubectl-datree
+<img src="https://img.shields.io/badge/docs-up--to--date-green" target="https://hub.datree.io/kubectl-plugin/#utm_source=github&utm_medium=organic_oss"> <img src="https://img.shields.io/badge/Supported%20OS-Linux%2FMacOS-green" target="_blank"> <img src="https://img.shields.io/github/v/tag/datreeio/kubectl-datree" target="https://github.com/datreeio/kubectl-datree/releases"> <img src="https://img.shields.io/github/issues-raw/datreeio/kubectl-datree" target="https://github.com/datreeio/kubectl-datree/issues">
 
 ## Overview 
-The Datree CLI provides a policy enforcement solution to run automatic checks for rule violations in Kuberenetes configuration files. To learn more about Datree, visit the [Datree website](https://www.datree.io/).
+[Datree's CLI](https://github.com/datreeio/datree) provides a policy enforcement solution to run automatic checks for rule violations in Kuberenetes configuration files.  
+This **kubectl plugin** extends the Datree CLI's capabilities to allow scanning resources within your cluster for misconfigurations.  
 
-This plugin extends the Datree CLI's capabilities to allow scanning resources within your cluster for misconfigurations.  
+<p align="center">
+   <img src="https://user-images.githubusercontent.com/19731161/154030200-e6ea64bc-d630-41e2-ac68-557a566d6206.png" alt="Datree-kubectl" width="80%">
+</p>
 
-<!--👉 **Docs:** [https://hub.datree.io/kubectl-plugin](https://hub.datree.io/kubectl-plugin/#utm_source=github&utm_medium=organic_oss) !-->
+👉 **Docs:** [https://hub.datree.io/kubectl-plugin](https://hub.datree.io/kubectl-plugin/#utm_source=github&utm_medium=organic_oss)
 
 <br/>
 
