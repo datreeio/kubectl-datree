@@ -1,16 +1,29 @@
 # kubectl-datree
+<img src="https://img.shields.io/badge/docs-up--to--date-green" target="https://hub.datree.io/kubectl-plugin/#utm_source=github&utm_medium=organic_oss"> <img src="https://img.shields.io/badge/Supported%20OS-Linux%2FMacOS-green" target="_blank"> <img src="https://img.shields.io/github/v/tag/datreeio/kubectl-datree" target="https://github.com/datreeio/kubectl-datree/releases"> <img src="https://img.shields.io/github/issues-raw/datreeio/kubectl-datree" target="https://github.com/datreeio/kubectl-datree/issues">
 
 ## Overview 
-[Datree](https://www.datree.io/) is a CLI tool that provides a policy enforcement solution to run automatic checks for rule violations in Kuberenetes configuration files.  
-This plugin extends the Datree CLI's capabilities to allow scanning resources within your cluster.  
 
-*Ensure your cluster is free from misconfigurations, and prepare it for the future by testing your resources against any k8s schema version!*  
+This **kubectl plugin** extends the [Datree CLI's](https://github.com/datreeio/datree) capabilities to allow scanning resources **within your cluster** for misconfigurations.  
+
+<p align="center">
+   <img src="https://user-images.githubusercontent.com/19731161/154030200-e6ea64bc-d630-41e2-ac68-557a566d6206.png" alt="Datree-kubectl" width="80%">
+</p>
+
 
 👉 **Docs:** [https://hub.datree.io/kubectl-plugin](https://hub.datree.io/kubectl-plugin/#utm_source=github&utm_medium=organic_oss)
-<br/><br/>
+<br/>
+
+## Use cases
+- Reveal unknown configuration issues  
+- Get ready for future k8s version upgrade  
+- Enforce standards and best practices    
+
+<br/>
+
 ## Supported Platforms
 This plugin supports **MacOS** and **Linux**.
-<br/><br/>
+
+<br/>
 
 ## Installation
 ### Via Krew
@@ -46,27 +59,27 @@ options:
 
 ## Specification
 The plugin supports the following resource types:
-* pod
-* service
-* ingress
-* daemonset
-* deployment
-* replicaset
-* statefulset
-* job
-* cronjobs  
+* Pod
+* Service
+* Ingress
+* Daemonset
+* Deployment
+* Replicaset
+* Statefulset
+* Job
+* CronJob  
 
-When running against a given namespace, only resources of these types will be checked.  
+:warning: When running against a given namespace, only resources of these types will be checked.  
 
 <br/>
 
 ## Examples
-This command will fetch all resources within the namespace "exmpl", and execute a policy check against them:
+This command will fetch all resources within the namespace `exmpl`, and execute a policy check against them:
 ```
 kubectl datree test -- -n exmpl
 ```
 
-This command will fetch the resource of kind "Service" named "myAwesomeService" in namespace "mySweetNamespace", and execute a policy check against it using k8s schema version 1.22.0:
+This command will fetch the resource of kind **Service** named `myAwesomeService` in namespace `mySweetNamespace`, and execute a policy check against it using k8s schema version 1.22.0:
 ```
 kubectl datree test -s "1.22.0" -- service myAwesomeService mySweetNamespace
 ```  
