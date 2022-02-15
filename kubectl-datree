@@ -15,14 +15,18 @@ show_help(){
     printf "\nDatree CLI args:\n"
     printf "  This plugin supports all of the Datree CLI arguments: https://hub.datree.io/cli-arguments\n"
     printf "\nOptions:\n"
-    printf "  [--namespace <namespace>] Test all resources in the cluster belonging to the specified namespace\n"
+    printf "  [-n <namespace>] Test all resources in the cluster belonging to the specified namespace\n"
     printf "  [<resource type> <resource name> <namespace>] Test a single given resource in the cluster\n"
-    printf "\nRunning 'kubectl datree test' with no arguments is equivalent to 'kubectl datree test -- --namespace default'\n"
+    printf "\nRunning 'kubectl datree test' with no arguments is equivalent to 'kubectl datree test -- -n default'\n"
 }
 
+PLUGIN_VERSION="v0.0.7"
+
 # Validate argument
-if [ "$1" != "test" ]
-then
+if [ "$1" == "version" ]; then
+    echo "kubectl-datree plugin version: $PLUGIN_VERSION"
+    exit 0
+elif [ "$1" != "test" ]; then
     show_help
     exit 1
 fi
@@ -69,7 +73,7 @@ while [[ $2 ]]; do
                 echo "No resource name provided, exiting..."
             fi
         else
-            echo "No namespace or resource name provided, exiting..."
+            echo "No resource type or name provided, exiting..."
         fi
         
         break
@@ -117,7 +121,7 @@ if ((TEST_BY_NAMESPACE)); then
     # Test all resources in a given namespace
     echo "Fetching resources, this may take some time depending on the amount of resources in your cluster..."
     
-    get_common_resources < <(kubectl get all -n $NAMESPACE -o name)
+    get_common_resources < <(kubectl get all -n $NAMESPACE --selector='!pod-template-hash' -o name)
     get_additional_resources
     wait
 

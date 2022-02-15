@@ -9,10 +9,10 @@ This **kubectl plugin** extends the Datree CLI's capabilities to allow scanning 
    <img src="https://user-images.githubusercontent.com/19731161/154030200-e6ea64bc-d630-41e2-ac68-557a566d6206.png" alt="Datree-kubectl" width="80%">
 </p>
 
+*Ensure your cluster is free from misconfigurations, and prepare it for the future by testing your resources against any k8s schema version!*  
+
 👉 **Docs:** [https://hub.datree.io/kubectl-plugin](https://hub.datree.io/kubectl-plugin/#utm_source=github&utm_medium=organic_oss)
-
-<br/>
-
+<br/><br/>
 ## Supported Platforms
 This plugin supports **MacOS** and **Linux**.
 <br/><br/>
@@ -71,8 +71,12 @@ This command will fetch all resources within the namespace `exmpl`, and execute 
 kubectl datree test -- -n exmpl
 ```
 
-This command will fetch the resource of kind `Service` named `myAwesomeService` in namespace `myCoolNamespace`, and execute a policy check against it using k8s schema version 1.22.0:
+This command will fetch the resource of kind **Service** named `myAwesomeService` in namespace `mySweetNamespace`, and execute a policy check against it using k8s schema version 1.22.0:
 ```
-kubectl datree test -s "1.22.0" -- service myAwesomeService myCoolNamespace
-```
+kubectl datree test -s "1.22.0" -- service myAwesomeService mySweetNamespace
+```  
+
+<br/>
+
+**Example test with no misconfigurations:**  
 ![](Resources/test_single_example.gif)
