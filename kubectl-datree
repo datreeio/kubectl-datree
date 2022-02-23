@@ -20,7 +20,7 @@ show_help(){
     printf "\nRunning 'kubectl datree test' with no arguments is equivalent to 'kubectl datree test -- -n default'\n"
 }
 
-PLUGIN_VERSION="v0.0.7"
+PLUGIN_VERSION="v0.0.8"
 
 # Validate argument
 if [ "$1" == "version" ]; then
@@ -35,7 +35,7 @@ fi
 SERVER_VERSION=$(kubectl version --short 2>/dev/null | grep "Server Version:")
 SERVER_VERSION=${SERVER_VERSION:17:7}
 SERVER_VERSION=${SERVER_VERSION%%-*}
-DATREE_SCHEMA_VERSION=$SERVER_VERSION
+export DATREE_SCHEMA_VERSION=$SERVER_VERSION
 
 DATREE_OPTIONS=()
 EOO=0
@@ -115,18 +115,22 @@ DATREE_TEST_COMMAND="datree test --ignore-missing-schemas "${DATREE_OPTIONS[@]}"
 
 # List all scanned files to display at end of test
 scanned_files=()
+wereFilesScanned=0
 
 # Test file/s
 if ((TEST_BY_NAMESPACE)); then
     # Test all resources in a given namespace
     echo "Fetching resources, this may take some time depending on the amount of resources in your cluster..."
     
-    get_common_resources < <(kubectl get all -n $NAMESPACE --selector='!pod-template-hash' -o name)
+    get_common_resources < <(kubectl get all -n $NAMESPACE --selector='!pod-template-hash','!controller-revision-hash','!controller-uid' -o name)
     get_additional_resources
     wait
 
     if [ "$(ls -A $DST_DIR)" ]; then
         $DATREE_TEST_COMMAND $DST_DIR/*.yaml
+        if [ "$?" != 1 ]; then
+            wereFilesScanned=1
+        fi
     else
         echo "Invalid namespace provided, exiting..."
     fi
@@ -137,15 +141,20 @@ else
     
     if [ -s $DST_DIR/"kubectl-$RESOURCE_KIND-$RESOURCE_NAME".yaml ]; then
         $DATREE_TEST_COMMAND $DST_DIR/"kubectl-$RESOURCE_KIND-$RESOURCE_NAME".yaml
+        if [ "$?" != 1 ]; then
+            wereFilesScanned=1
+        fi
     fi
 fi
 
-printf "\nThe following cluster resources in namespace '$NAMESPACE' were checked:\n\n"
-for file in "${scanned_files[@]}"
-do
-     echo $file
-done
-printf "\n"
+if [ "$wereFilesScanned" != 0 ]; then
+    printf "\nThe following cluster resources in namespace '$NAMESPACE' were checked:\n\n"
+    for file in "${scanned_files[@]}"
+    do
+        echo $file
+    done
+    printf "\n"
+fi
 
 # Cleanup
 rm -rf $DST_DIR
