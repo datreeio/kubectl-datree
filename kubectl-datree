@@ -111,7 +111,7 @@ get_additional_resources(){
     done
 }
 
-DATREE_TEST_COMMAND="datree test --ignore-missing-schemas "${DATREE_OPTIONS[@]}""
+DATREE_TEST_COMMAND="datree test "${DATREE_OPTIONS[@]}""
 
 # List all scanned files to display at end of test
 scanned_files=()
