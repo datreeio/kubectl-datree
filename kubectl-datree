@@ -20,7 +20,7 @@ show_help(){
     printf "\nRunning 'kubectl datree test' with no arguments is equivalent to 'kubectl datree test -- -n default'\n"
 }
 
-PLUGIN_VERSION="v0.0.8"
+PLUGIN_VERSION="v0.1.1"
 
 # Validate argument
 if [ "$1" == "version" ]; then
