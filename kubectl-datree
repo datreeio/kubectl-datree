@@ -86,7 +86,13 @@ mkdir -p $DST_DIR
 get_yamls(){
     while read line
         do
-            kubectl get $line -n $NAMESPACE -o yaml > $DST_DIR/"kubectl-${line%%/*}-${line##*/}".yaml &
+            FILENAME="kubectl-${line%%/*}-${line##*/}.yaml"
+
+            kubectl apply view-last-applied $line -n $NAMESPACE > $DST_DIR/$FILENAME
+            if [ ! -s $DST_DIR/$FILENAME ]; then
+                kubectl get $line -n $NAMESPACE -o yaml > $DST_DIR/$FILENAME &
+            fi
+
             scanned_files+=("$line")
     done
 }
@@ -99,7 +105,13 @@ get_common_resources(){
                 continue
             fi
 
-            kubectl get $line -n $NAMESPACE -o yaml > $DST_DIR/"kubectl-${line%%/*}-${line##*/}".yaml &
+            FILENAME="kubectl-${line%%/*}-${line##*/}.yaml"
+
+            kubectl apply view-last-applied $line -n $NAMESPACE > $DST_DIR/$FILENAME
+            if [ ! -s $DST_DIR/$FILENAME ]; then
+                kubectl get $line -n $NAMESPACE -o yaml > $DST_DIR/$FILENAME &
+            fi
+
             scanned_files+=("$line")
     done
 }
@@ -151,7 +163,7 @@ if [ "$wereFilesScanned" != 0 ]; then
     printf "\nThe following cluster resources in namespace '$NAMESPACE' were checked:\n\n"
     for file in "${scanned_files[@]}"
     do
-        echo $file
+        echo "$file"
     done
     printf "\n"
 fi
