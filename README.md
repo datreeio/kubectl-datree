@@ -75,12 +75,12 @@ The plugin supports the following resource types:
 <br/>
 
 ## Examples
-This command will fetch all resources within the namespace `exmpl`, and execute a policy check against them:
+The following command will fetch all resources within the namespace `exmpl`, and execute a policy check against them:
 ```
 kubectl datree test -- -n exmpl
 ```
 
-This command will fetch the resource of kind **Service** named `myAwesomeService` in namespace `mySweetNamespace`, and execute a policy check against it using k8s schema version 1.22.0:
+The following command will fetch the resource of kind **Service** named `myAwesomeService` in namespace `mySweetNamespace`, and execute a policy check against it using k8s schema version 1.22.0:
 ```
 kubectl datree test -s "1.22.0" -- service myAwesomeService mySweetNamespace
 ```  
