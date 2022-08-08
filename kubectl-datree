@@ -20,7 +20,7 @@ show_help(){
     printf "\nRunning 'kubectl datree test' with no arguments is equivalent to 'kubectl datree test -- -n default'\n"
 }
 
-PLUGIN_VERSION="v0.1.1"
+PLUGIN_VERSION="v0.1.2"
 
 # Validate argument
 if [ "$1" == "version" ]; then
@@ -116,7 +116,7 @@ get_common_resources(){
     done
 }
 
-additional_resources=("ingress")
+additional_resources=("ingress","crds")
 get_additional_resources(){
     for str in ${additional_resources[@]}; do
         get_yamls < <(kubectl get $str -o name -n $NAMESPACE)
