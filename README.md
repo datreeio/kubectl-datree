@@ -68,7 +68,8 @@ The plugin supports the following resource types:
 * Replicaset
 * Statefulset
 * Job
-* CronJob  
+* CronJob 
+* CRD (not the custom resource itself, but its definition)
 
 :warning: When running against a given namespace, only resources of these types will be checked.  
 
