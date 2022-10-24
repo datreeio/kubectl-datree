@@ -1,5 +1,6 @@
 #!/bin/bash
 
+
 # Check if Datree is installed
 if ! command -v datree &> /dev/null; then
     printf "Datree is not installed on your machine, please run 'curl https://get.datree.io | /bin/bash' to install\n"
@@ -16,7 +17,9 @@ show_help(){
     printf "  This plugin supports all of the Datree CLI arguments: https://hub.datree.io/cli-arguments\n"
     printf "\nOptions:\n"
     printf "  [-n <namespace>] Test all resources in the cluster belonging to the specified namespace\n"
-    printf "  [<resource type> <resource name> <namespace>] Test a single given resource in the cluster\n"
+    printf "  [--all] Test all resources in the cluster\n"
+    printf "      When using '--all', you can specify namespaces to exclude using '--exclude <namespace> --exclude <namespace2>'\n"
+    printf "  [<resource type> <resource name> <namespace>] Test a single resource in the cluster\n"
     printf "\nRunning 'kubectl datree test' with no arguments is equivalent to 'kubectl datree test -- -n default'\n"
 }
 
@@ -40,7 +43,9 @@ export DATREE_SCHEMA_VERSION=$SERVER_VERSION
 DATREE_OPTIONS=()
 EOO=0
 TEST_BY_NAMESPACE=1
-NAMESPACE="default"
+TEST_ALL=0
+NAMESPACES=()
+EXCLUDED_NAMESPACES=("kube-system" "kube-public" "kube-node-lease")
 RESOURCE_KIND=""
 RESOURCE_NAME=""
 
@@ -55,11 +60,33 @@ while [[ $2 ]]; do
 
         shift
     else
-        if [[ $2 == "-n" ]] || [[ $2 == "--namespace" ]]; then
+        if [[ $2 == "--all" ]]; then
+            TEST_BY_NAMESPACE=0
+            TEST_ALL=1
+            shift
+            continue
+        elif [[ $2 == "--exclude" ]]; then
+            if [[ $TEST_ALL -ne 1 ]]; then
+                printf "Incorrect usage of the '--exclude' option.\n\n"
+                show_help
+                exit 1
+            fi
+
             if [ ! -z "$3" ]; then
-                NAMESPACE="$3"
+                EXCLUDED_NAMESPACES+=("$3")
+                shift 2
+                continue
+            else
+                printf "Incorrect usage of the '--exclude' option.\n\n"
+                show_help
+                exit 1
+            fi 
+        elif [[ $2 == "-n" ]] || [[ $2 == "--namespace" ]]; then
+            if [ ! -z "$3" ]; then
+                NAMESPACES+=("$3")
             else
                 echo "No namespace provided, using 'default' namespace"
+                NAMESPACES+=("default")
             fi
         elif [ ! -z "$2" ]; then
             if [ ! -z "$3" ]; then
@@ -67,10 +94,14 @@ while [[ $2 ]]; do
                 RESOURCE_KIND="$2"
                 RESOURCE_NAME="$3"
                 if [ ! -z "$4" ]; then
-                    NAMESPACE="$4"
+                    NAMESPACES+=("$4")
+                else
+                    echo "No namespace provided, exiting..."
+                    exit 1
                 fi
             else
                 echo "No resource name provided, exiting..."
+                exit 1
             fi
         else
             echo "No resource type or name provided, exiting..."
@@ -88,9 +119,9 @@ get_yamls(){
         do
             FILENAME="kubectl-${line%%/*}-${line##*/}.yaml"
 
-            kubectl apply view-last-applied $line -n $NAMESPACE > $DST_DIR/$FILENAME
+            kubectl apply view-last-applied $line -n "$1" > $DST_DIR/$FILENAME
             if [ ! -s $DST_DIR/$FILENAME ]; then
-                kubectl get $line -n $NAMESPACE -o yaml > $DST_DIR/$FILENAME &
+                kubectl get $line -n "$1" -o yaml > $DST_DIR/$FILENAME &
             fi
 
             scanned_files+=("$line")
@@ -107,20 +138,38 @@ get_common_resources(){
 
             FILENAME="kubectl-${line%%/*}-${line##*/}.yaml"
 
-            kubectl apply view-last-applied $line -n $NAMESPACE > $DST_DIR/$FILENAME
+            kubectl apply view-last-applied $line -n "$1" > $DST_DIR/$FILENAME
             if [ ! -s $DST_DIR/$FILENAME ]; then
-                kubectl get $line -n $NAMESPACE -o yaml > $DST_DIR/$FILENAME &
+                kubectl get $line -n "$1" -o yaml > $DST_DIR/$FILENAME &
             fi
 
             scanned_files+=("$line")
     done
 }
 
-additional_resources=("ingress","crds")
+additional_resources=("ingress")
 get_additional_resources(){
     for str in ${additional_resources[@]}; do
-        get_yamls < <(kubectl get $str -o name -n $NAMESPACE)
+        get_yamls "$1" < <(kubectl get $str -o name -n $1)
     done
+}
+
+get_crds(){
+    get_yamls "default" < <(kubectl get crd -o name)
+}
+
+get_all_namespaces(){
+    while read line
+        do
+            line=${line##*/}
+
+            if [[ " ${EXCLUDED_NAMESPACES[*]} " =~ " ${line} " ]]; then
+                # skip excluded namespace
+                continue;
+            fi
+
+            NAMESPACES+=("$line")
+    done < <(kubectl get ns -o name)
 }
 
 DATREE_TEST_COMMAND="datree test "${DATREE_OPTIONS[@]}""
@@ -130,12 +179,38 @@ scanned_files=()
 wereFilesScanned=0
 
 # Test file/s
-if ((TEST_BY_NAMESPACE)); then
+if ((TEST_ALL)); then 
+        # Test all resources in the cluster 
+        echo "Fetching resources from all namespaces, this may take some time depending on the amount of resources in your cluster..."      
+        get_all_namespaces
+        for namespace in ${NAMESPACES[@]}; do
+            get_common_resources $namespace < <(kubectl get all -n $namespace --selector='!pod-template-hash','!controller-revision-hash','!controller-uid' -o name)
+            get_additional_resources $namespace
+        done
+
+        get_crds
+        wait
+
+        if [ "$(ls -A $DST_DIR)" ]; then
+            $DATREE_TEST_COMMAND $DST_DIR/*.yaml
+            if [ "$?" != 1 ]; then
+                wereFilesScanned=1
+            fi
+        else
+            echo "Invalid namespace provided, exiting..."
+        fi
+elif ((TEST_BY_NAMESPACE)); then
     # Test all resources in a given namespace
+    if [ ${#NAMESPACES[@]} -eq 0 ]; then
+        echo "No namespace provided, using 'default' namespace"
+        NAMESPACES+=("default")
+    fi
+    
     echo "Fetching resources, this may take some time depending on the amount of resources in your cluster..."
     
-    get_common_resources < <(kubectl get all -n $NAMESPACE --selector='!pod-template-hash','!controller-revision-hash','!controller-uid' -o name)
-    get_additional_resources
+    get_common_resources ${NAMESPACES[0]} < <(kubectl get all -n ${NAMESPACES[0]} --selector='!pod-template-hash','!controller-revision-hash','!controller-uid' -o name)
+    get_additional_resources ${NAMESPACES[0]}
+    get_crds
     wait
 
     if [ "$(ls -A $DST_DIR)" ]; then
@@ -148,8 +223,8 @@ if ((TEST_BY_NAMESPACE)); then
     fi
 else
     # Test a single file of a given resource type
-    kubectl get $RESOURCE_KIND $RESOURCE_NAME -n $NAMESPACE -o yaml > $DST_DIR/"kubectl-$RESOURCE_KIND-$RESOURCE_NAME".yaml
-    scanned_files+=("$(kubectl get $RESOURCE_KIND $RESOURCE_NAME -n $NAMESPACE -o name)")
+    kubectl get $RESOURCE_KIND $RESOURCE_NAME -n ${NAMESPACES[0]} -o yaml > $DST_DIR/"kubectl-$RESOURCE_KIND-$RESOURCE_NAME".yaml
+    scanned_files+=("$(kubectl get $RESOURCE_KIND $RESOURCE_NAME -n ${NAMESPACES[0]} -o name)")
     
     if [ -s $DST_DIR/"kubectl-$RESOURCE_KIND-$RESOURCE_NAME".yaml ]; then
         $DATREE_TEST_COMMAND $DST_DIR/"kubectl-$RESOURCE_KIND-$RESOURCE_NAME".yaml
@@ -160,12 +235,20 @@ else
 fi
 
 if [ "$wereFilesScanned" != 0 ]; then
-    printf "\nThe following cluster resources in namespace '$NAMESPACE' were checked:\n\n"
-    for file in "${scanned_files[@]}"
-    do
-        echo "$file"
-    done
-    printf "\n"
+    if ((TEST_ALL)); then
+        printf "All supported resources in the following namespaces were checked:\n\n"
+        for namespace in ${NAMESPACES[@]}
+        do
+            printf "$namespace\n"
+        done
+    else
+        printf "The following resources in namespace '${NAMESPACES[0]}' were checked:\n\n"
+        for file in "${scanned_files[@]}"
+        do
+            printf "$file\n"
+        done
+        printf "\n"
+    fi
 fi
 
 # Cleanup
