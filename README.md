@@ -51,7 +51,9 @@ datree CLI args:
 
 options:
   [-n <namespace>] Test all resources in the cluster belonging to the specified namespace
-  [<resource type> <resource name> <namespace>] Test a single given resource in the cluster
+  [--all] Test all resources in the cluster
+      When using '--all', you can specify namespaces to exclude using '--exclude <namespace> --exclude <namespace2>'
+  [<resource type> <resource name> <namespace>] Test a single resource in the cluster
 
   Running 'kubectl datree test' with no arguments is equivalent to 'kubectl datree test -- -n default'
 ```
@@ -85,6 +87,11 @@ The following command will fetch the resource of kind **Service** named `myAweso
 ```
 kubectl datree test -s "1.22.0" -- service myAwesomeService mySweetNamespace
 ```  
+
+The following command will fetch all resources from all namespaces in the cluster except for 'default':
+```
+kubectl datree test -- --all --exclude default
+```
 
 <br/>
 
