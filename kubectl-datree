@@ -105,6 +105,7 @@ while [[ $2 ]]; do
             fi
         else
             echo "No resource type or name provided, exiting..."
+            exit 1
         fi
         
         break
@@ -198,6 +199,7 @@ if ((TEST_ALL)); then
             fi
         else
             echo "Invalid namespace provided, exiting..."
+            
         fi
 elif ((TEST_BY_NAMESPACE)); then
     # Test all resources in a given namespace
@@ -219,7 +221,8 @@ elif ((TEST_BY_NAMESPACE)); then
             wereFilesScanned=1
         fi
     else
-        echo "Invalid namespace provided, exiting..."
+        echo "Directory is empty or an error occurred when writing files, exiting..."
+        exit 1
     fi
 else
     # Test a single file of a given resource type
